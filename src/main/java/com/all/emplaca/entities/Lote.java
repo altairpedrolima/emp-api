@@ -1,6 +1,5 @@
 package com.all.emplaca.entities;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -14,40 +13,50 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.all.emplaca.enums.EstadoLote;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class Lote implements Serializable{
+public class Lote {
 
-	private static final long serialVersionUID = 4780447495743154454L;
+	public Lote(Long quantidadeBlanksSolicitados, Fabricante fabricante) {
+		this.quantidadeBlanksSolicitados = quantidadeBlanksSolicitados;
+		this.fabricante = fabricante;
+	}
+
+	public Lote() {
+
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
 	private String codigo;
-	
+
 	@Column(name = "quantidade_blanks_solicitados")
 	private Long quantidadeBlanksSolicitados;
-	
+
 	@Column(name = "quantidade_blanks_gerados")
 	private Long quantidadeBlanksGerados;
-	
+
 	@Column(name = "data_hora_registro")
 	private LocalDateTime dataHoraRegistro;
-	
+
 	@Enumerated(EnumType.STRING)
-	@Column(name = "estado_lote", nullable = false)
+	@Column(name = "estado_lote")
 	private EstadoLote estadoLote;
-	
-	@ManyToOne(optional = false)
+
+	@JsonIgnore
+	@ManyToOne
 	@JoinColumn(name = "id_fabricante")
 	private Fabricante fabricante;
-	
-	//TODO Associar lote com blanks
-	/*@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
-	private List<Blanks> blanks;
+
+	// TODO Associar lote com blanks
+	/*
+	 * @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER,
+	 * orphanRemoval=true) private List<Blanks> blanks;
 	 */
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -168,10 +177,5 @@ public class Lote implements Serializable{
 				+ ", quantidadeBlanksGerados=" + quantidadeBlanksGerados + ", dataHoraRegistro=" + dataHoraRegistro
 				+ ", estadoLote=" + estadoLote + ", fabricante=" + fabricante + "]";
 	}
-	
 
-	
-	
-	
-	
 }

@@ -6,6 +6,7 @@ import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.all.emplaca.controller.LoteRequest;
 import com.all.emplaca.entities.Fabricante;
 import com.all.emplaca.repository.FabricanteRepository;
 
@@ -15,15 +16,14 @@ public class FabricanteService {
 	@Autowired
 	FabricanteRepository fabricanteRepository;
 
-	public Fabricante findByCnpj(String cnpj) {
-		Optional<Fabricante> obj = fabricanteRepository.findByCnpj(cnpj);
-		return obj.orElseThrow(() -> new ObjectNotFoundException(cnpj, Fabricante.class.getName()));
+	public Fabricante fabricanteByLoteRequest(LoteRequest loteRequest) {
+		Long id = loteRequest.idFabricante;
+		return fabricanteById(id);		
 	}
 	
-	public Fabricante findById(Long id) {
-		Optional<Fabricante> obj = fabricanteRepository.findById(id);
-		return obj.orElseThrow(() -> new ObjectNotFoundException(id, Fabricante.class.getName()));
+	public Fabricante fabricanteById(Long id) {
+		Optional<Fabricante> fabricante = this.fabricanteRepository.findById(id);
+		return fabricante.orElseThrow(() -> new ObjectNotFoundException(id, Fabricante.class.getName()));
 	}
 	
-
 }

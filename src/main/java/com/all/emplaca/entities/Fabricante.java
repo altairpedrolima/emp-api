@@ -11,8 +11,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Email;
 
-import org.springframework.util.StringUtils;
-
 import com.all.emplaca.utils.Mensagens;
 
 @Entity
@@ -20,7 +18,7 @@ import com.all.emplaca.utils.Mensagens;
 public class Fabricante extends ClienteWs {
 
 	private static final long serialVersionUID = -8308907427873657183L;
-
+	
 	@Column(name = "nome_fantasia")
 	private String nomeFantasia;
 
@@ -30,10 +28,6 @@ public class Fabricante extends ClienteWs {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_endereco")
 	private Endereco endereco;
-	
-	@OneToMany(mappedBy = "fabricante")
-	private List<Lote> lotes;
-	
 
 	@Column(columnDefinition = "TEXT")
 	@Email(message = Mensagens.EMAIL_INVALIDO)
@@ -45,6 +39,8 @@ public class Fabricante extends ClienteWs {
 
 	@Column(name = "numero_portaria")
 	private String numeroPortaria;
+
+	// TODO Confirmar tipo LocalDate para campos de entidade
 
 	@Column(name = "data_licenciamento")
 	private LocalDate dataLicenciamento;
@@ -70,22 +66,24 @@ public class Fabricante extends ClienteWs {
 	@Column(name = "motivo_inativacao")
 	private String motivoInativacao;
 	
-	//TODO Criar associação Fabricante com Sancao
+	@OneToMany(mappedBy = "fabricante", cascade = CascadeType.ALL)
+	private List<Lote> lotes;
 
-	// Não usar sancao no ToString
-	// @OneToMany(mappedBy = "fabricante", cascade = CascadeType.MERGE, fetch =
-	// FetchType.EAGER)
-	// private List<Sancao> sancoes;
+/*	 Não usar sancao no ToString 
+	@OneToMany(mappedBy = "empresa", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+	// @Fetch(FetchMode.SUBSELECT)
+	private List<Sancao> sancoes;*/
 
 	public Fabricante() {
-//		if (sancoes == null) {
-//			sancoes = new ArrayList<Sancao>();
-//		}
+/*		if (sancoes == null) {
+			sancoes = new ArrayList<Sancao>();
+		}*/
 	}
-
+	
+/* TODO Os impedimentos devem estar na camada de servico não na camada de entidade migrar
 	public boolean estaComAcessoImpedido() {
-		return impedidaPorAlvara() || impedidoPeloNumeroDoContrato() || impedidaPorValidadeDoContrato()
-				|| impedidaPorInativacao() || impedidaPorValidadeDaPortaria();
+		return impedidaPorAlvara() || impedidoPeloNumeroDoContrato()
+				|| impedidaPorValidadeDoContrato() || impedidaPorInativacao() || impedidaPorValidadeDaPortaria();
 	}
 
 	private boolean impedidaPorInativacao() {
@@ -116,7 +114,7 @@ public class Fabricante extends ClienteWs {
 
 	private boolean impedidoPeloNumeroDoContrato() {
 		return StringUtils.isEmpty(numeroContrato);
-	}
+	}*/
 
 	public String getNomeFantasia() {
 		return nomeFantasia;
@@ -140,15 +138,6 @@ public class Fabricante extends ClienteWs {
 
 	public void setEndereco(Endereco endereco) {
 		this.endereco = endereco;
-	}
-
-		
-	public List<Lote> getLotes() {
-		return lotes;
-	}
-
-	public void setLotes(List<Lote> lotes) {
-		this.lotes = lotes;
 	}
 
 	public String getEmail() {
@@ -237,6 +226,14 @@ public class Fabricante extends ClienteWs {
 
 	public void setMotivoInativacao(String motivoInativacao) {
 		this.motivoInativacao = motivoInativacao;
+	}
+
+	public List<Lote> getLotes() {
+		return lotes;
+	}
+
+	public void setLotes(List<Lote> lotes) {
+		this.lotes = lotes;
 	}
 
 	@Override
@@ -376,15 +373,18 @@ public class Fabricante extends ClienteWs {
 		builder.append("]");
 		return builder.toString();
 	}
+	
+	
 
-	/*
-	 * private boolean impedidaPorSancao() { for (Sancao sancao : sancoes) { if
-	 * (sancao.impedeAcesso()) { return true;
-	 * 
-	 * } } return false; }
-	 */
-	
-	
+/*	private boolean impedidaPorSancao() {
+		for (Sancao sancao : sancoes) {
+			if (sancao.impedeAcesso()) {
+				return true;
+
+			}
+		}
+		return false;
+	}*/
 	
 	
 
