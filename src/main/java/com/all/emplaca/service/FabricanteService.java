@@ -17,7 +17,7 @@ public class FabricanteService {
 	FabricanteRepository fabricanteRepository;
 
 	public Fabricante fabricanteByLoteRequest(LoteRequest loteRequest) {
-		Long id = loteRequest.idFabricante;
+		Long id = loteRequest.getFabricanteId();
 		return fabricanteById(id);		
 	}
 	

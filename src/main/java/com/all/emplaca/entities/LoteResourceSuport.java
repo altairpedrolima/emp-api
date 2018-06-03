@@ -14,9 +14,12 @@ public class LoteResourceSuport extends ResourceSupport	{
 	public LoteResourceSuport(Lote lote) {
 		this.lote = lote;
 		final Long id = lote.getId();
+		final Long fabricanteId = lote.getFabricante().getId();
 		add(linkTo(LoteResource.class).withRel("lotes"));
 		add(linkTo(methodOn(LoteResource.class).get(id)).withSelfRel());
-
+		add(linkTo(methodOn(LoteResource.class).lote()).withSelfRel());
+		add(linkTo(methodOn(LoteResource.class).getLotes(fabricanteId)).withSelfRel());
+		
 	}
 
 	public Lote getLote() {

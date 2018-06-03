@@ -13,6 +13,7 @@ import com.all.emplaca.enums.EstadoLote;
 import com.all.emplaca.repository.FabricanteRepository;
 import com.all.emplaca.repository.LoteRepository;
 import com.all.emplaca.service.LoteService;
+import com.all.emplaca.service.utils.GeradorNumeroLote;
 
 @SpringBootApplication
 public class EmplacaApiApplication implements CommandLineRunner{
@@ -48,12 +49,12 @@ public class EmplacaApiApplication implements CommandLineRunner{
 		fabricanteRepository.save(fabricante);
 		
 		Lote lote = new Lote();
-		lote.setCodigo("12345");
-		lote.setQuantidadeBlanksSolicitados(50l);
+		lote.setNumeroLote(GeradorNumeroLote.gerarNumeroLotePara(fabricante.getId()));
+		lote.setQuantidadeDeBlanksSolicitados(50l);
 		lote.setEstadoLote(EstadoLote.SOLICITADO);
 		lote.setFabricante(fabricante);
-		loteService.save(lote);
-		//loteRepository.save(lote);
+		// loteService.save(lote);
+		loteRepository.save(lote);
 
 		
 		

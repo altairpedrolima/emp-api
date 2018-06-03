@@ -5,8 +5,25 @@ import javax.validation.constraints.NotNull;
 public class LoteRequest {
 	
 	@NotNull
-	public Long idFabricante;
+	private Long fabricanteId;
 	
-	public Long quantidaDeBlanks;
+	private Long quantidadeDeBlanks;
 
+	public Long getFabricanteId() {
+		return fabricanteId;
+	}
+
+	public void setFabricanteId(Long fabricanteId) {
+		this.fabricanteId = fabricanteId;
+	}
+
+	public Long getQuantidadeDeBlanks() {
+		return quantidadeDeBlanks;
+	}
+
+	public void setQuantidadeDeBlanks(Long quantidadeDeBlanks) {
+		this.quantidadeDeBlanks = quantidadeDeBlanks;
+	}
+	
+	
 }

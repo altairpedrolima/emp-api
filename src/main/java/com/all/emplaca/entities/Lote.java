@@ -12,14 +12,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.springframework.hateoas.Identifiable;
+
 import com.all.emplaca.enums.EstadoLote;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class Lote {
+public class Lote implements Identifiable<Long>{
 
-	public Lote(Long quantidadeBlanksSolicitados, Fabricante fabricante) {
-		this.quantidadeBlanksSolicitados = quantidadeBlanksSolicitados;
+	public Lote(Long quantidadeDeBlanksSolicitados, Fabricante fabricante) {
+		this.quantidadeDeBlanksSolicitados = quantidadeDeBlanksSolicitados;
 		this.fabricante = fabricante;
 	}
 
@@ -31,13 +33,13 @@ public class Lote {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	private String codigo;
+	private String numeroLote;
 
 	@Column(name = "quantidade_blanks_solicitados")
-	private Long quantidadeBlanksSolicitados;
+	private Long quantidadeDeBlanksSolicitados;
 
 	@Column(name = "quantidade_blanks_gerados")
-	private Long quantidadeBlanksGerados;
+	private Long quantidadeDeBlanksGerados;
 
 	@Column(name = "data_hora_registro")
 	private LocalDateTime dataHoraRegistro;
@@ -51,12 +53,6 @@ public class Lote {
 	@JoinColumn(name = "id_fabricante")
 	private Fabricante fabricante;
 
-	// TODO Associar lote com blanks
-	/*
-	 * @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER,
-	 * orphanRemoval=true) private List<Blanks> blanks;
-	 */
-
 	public Long getId() {
 		return id;
 	}
@@ -65,28 +61,28 @@ public class Lote {
 		this.id = id;
 	}
 
-	public String getCodigo() {
-		return codigo;
+	public String getNumeroLote() {
+		return numeroLote;
 	}
 
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
+	public void setNumeroLote(String numeroLote) {
+		this.numeroLote = numeroLote;
 	}
 
-	public Long getQuantidadeBlanksSolicitados() {
-		return quantidadeBlanksSolicitados;
+	public Long getQuantidadeDeBlanksSolicitados() {
+		return quantidadeDeBlanksSolicitados;
 	}
 
-	public void setQuantidadeBlanksSolicitados(Long quantidadeBlanksSolicitados) {
-		this.quantidadeBlanksSolicitados = quantidadeBlanksSolicitados;
+	public void setQuantidadeDeBlanksSolicitados(Long quantidadeDeBlanksSolicitados) {
+		this.quantidadeDeBlanksSolicitados = quantidadeDeBlanksSolicitados;
 	}
 
-	public Long getQuantidadeBlanksGerados() {
-		return quantidadeBlanksGerados;
+	public Long getQuantidadeDeBlanksGerados() {
+		return quantidadeDeBlanksGerados;
 	}
 
-	public void setQuantidadeBlanksGerados(Long quantidadeBlanksGerados) {
-		this.quantidadeBlanksGerados = quantidadeBlanksGerados;
+	public void setQuantidadeDeBlanksGerados(Long quantidadeDeBlanksGerados) {
+		this.quantidadeDeBlanksGerados = quantidadeDeBlanksGerados;
 	}
 
 	public LocalDateTime getDataHoraRegistro() {
@@ -117,13 +113,14 @@ public class Lote {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
 		result = prime * result + ((dataHoraRegistro == null) ? 0 : dataHoraRegistro.hashCode());
 		result = prime * result + ((estadoLote == null) ? 0 : estadoLote.hashCode());
 		result = prime * result + ((fabricante == null) ? 0 : fabricante.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((quantidadeBlanksGerados == null) ? 0 : quantidadeBlanksGerados.hashCode());
-		result = prime * result + ((quantidadeBlanksSolicitados == null) ? 0 : quantidadeBlanksSolicitados.hashCode());
+		result = prime * result + ((numeroLote == null) ? 0 : numeroLote.hashCode());
+		result = prime * result + ((quantidadeDeBlanksGerados == null) ? 0 : quantidadeDeBlanksGerados.hashCode());
+		result = prime * result
+				+ ((quantidadeDeBlanksSolicitados == null) ? 0 : quantidadeDeBlanksSolicitados.hashCode());
 		return result;
 	}
 
@@ -136,11 +133,6 @@ public class Lote {
 		if (getClass() != obj.getClass())
 			return false;
 		Lote other = (Lote) obj;
-		if (codigo == null) {
-			if (other.codigo != null)
-				return false;
-		} else if (!codigo.equals(other.codigo))
-			return false;
 		if (dataHoraRegistro == null) {
 			if (other.dataHoraRegistro != null)
 				return false;
@@ -158,24 +150,53 @@ public class Lote {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (quantidadeBlanksGerados == null) {
-			if (other.quantidadeBlanksGerados != null)
+		if (numeroLote == null) {
+			if (other.numeroLote != null)
 				return false;
-		} else if (!quantidadeBlanksGerados.equals(other.quantidadeBlanksGerados))
+		} else if (!numeroLote.equals(other.numeroLote))
 			return false;
-		if (quantidadeBlanksSolicitados == null) {
-			if (other.quantidadeBlanksSolicitados != null)
+		if (quantidadeDeBlanksGerados == null) {
+			if (other.quantidadeDeBlanksGerados != null)
 				return false;
-		} else if (!quantidadeBlanksSolicitados.equals(other.quantidadeBlanksSolicitados))
+		} else if (!quantidadeDeBlanksGerados.equals(other.quantidadeDeBlanksGerados))
+			return false;
+		if (quantidadeDeBlanksSolicitados == null) {
+			if (other.quantidadeDeBlanksSolicitados != null)
+				return false;
+		} else if (!quantidadeDeBlanksSolicitados.equals(other.quantidadeDeBlanksSolicitados))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Lote [id=" + id + ", codigo=" + codigo + ", quantidadeBlanksSolicitados=" + quantidadeBlanksSolicitados
-				+ ", quantidadeBlanksGerados=" + quantidadeBlanksGerados + ", dataHoraRegistro=" + dataHoraRegistro
-				+ ", estadoLote=" + estadoLote + ", fabricante=" + fabricante + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Lote [id=");
+		builder.append(id);
+		builder.append(", numeroLote=");
+		builder.append(numeroLote);
+		builder.append(", quantidadeDeBlanksSolicitados=");
+		builder.append(quantidadeDeBlanksSolicitados);
+		builder.append(", quantidadeDeBlanksGerados=");
+		builder.append(quantidadeDeBlanksGerados);
+		builder.append(", dataHoraRegistro=");
+		builder.append(dataHoraRegistro);
+		builder.append(", estadoLote=");
+		builder.append(estadoLote);
+		builder.append(", fabricante=");
+		builder.append(fabricante);
+		builder.append("]");
+		return builder.toString();
 	}
+
+	
+
+	// TODO Associar lote com blanks
+	/*
+	 * @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER,
+	 * orphanRemoval=true) private List<Blanks> blanks;
+	 */
+
+	
 
 }
