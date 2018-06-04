@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resources;
@@ -68,22 +67,26 @@ public class LoteResource {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<LoteResourceSuport> get(Long id) {
-		return loteService
-		        .findById(id)
-		        .map(lote -> ResponseEntity.ok(new LoteResourceSuport(lote)))
-		.orElseThrow(() -> new ObjectNotFoundException(null,"Lote nao encontrado"));
+		Lote lote = loteService.findById(id);
+		return ResponseEntity.ok(new LoteResourceSuport(lote));		
 	}
 	
 	@GetMapping("/{id}/fabricante/{fabricanteId}")
 	public ResponseEntity<Resources<LoteResourceSuport>> getLotes(final Long fabricanteId) {
+		
 		final List<LoteResourceSuport> collection =
 				loteService.findByFabricanteId(fabricanteId)
 				.stream()
 				.map(LoteResourceSuport::new).collect(Collectors.toList());
+		
 		final Resources<LoteResourceSuport> resources = new Resources<>(collection);
-		final String uriString = ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString();
+		
+		final String uriString = ServletUriComponentsBuilder
+				.fromCurrentRequest()
+				.build().toUriString();
 		
 		resources.add(new Link(uriString, "self"));
+		
 		return ResponseEntity.ok(resources);
 	}
 
