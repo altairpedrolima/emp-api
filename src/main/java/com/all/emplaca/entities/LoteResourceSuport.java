@@ -5,6 +5,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import org.springframework.hateoas.ResourceSupport;
 
+import com.all.emplaca.controller.LoteRequest;
 import com.all.emplaca.controller.LoteResource;
 
 public class LoteResourceSuport extends ResourceSupport	{
@@ -13,12 +14,10 @@ public class LoteResourceSuport extends ResourceSupport	{
 
 	public LoteResourceSuport(Lote lote) {
 		this.lote = lote;
-		final Long id = lote.getId();
-		final Long fabricanteId = lote.getFabricante().getId();
+		final LoteRequest loteRequest = new LoteRequest();
 		add(linkTo(LoteResource.class).withRel("lotes"));
-		add(linkTo(methodOn(LoteResource.class).get(id)).withSelfRel());
 		add(linkTo(methodOn(LoteResource.class).lote()).withSelfRel());
-		add(linkTo(methodOn(LoteResource.class).getLotes(fabricanteId)).withSelfRel());
+		add(linkTo(methodOn(LoteResource.class).lote(loteRequest)).withSelfRel());
 		
 	}
 

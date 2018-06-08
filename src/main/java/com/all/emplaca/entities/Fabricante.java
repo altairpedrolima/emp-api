@@ -68,6 +68,9 @@ public class Fabricante extends ClienteWs {
 	
 	@OneToMany(mappedBy = "fabricante", cascade = CascadeType.ALL)
 	private List<Lote> lotes;
+	
+	@Column
+	private Long quotaDeBlanks;
 
 /*	 Não usar sancao no ToString 
 	@OneToMany(mappedBy = "empresa", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
@@ -78,6 +81,13 @@ public class Fabricante extends ClienteWs {
 /*		if (sancoes == null) {
 			sancoes = new ArrayList<Sancao>();
 		}*/
+	}
+	
+	public Fabricante(String nome, String cnpj, Boolean inativa, Long quotaDeBlanks) {
+		super(nome);
+		this.cnpj = cnpj;
+		this.inativa = inativa;
+		this.quotaDeBlanks = quotaDeBlanks;
 	}
 	
 /* TODO Os impedimentos devem estar na camada de servico não na camada de entidade migrar
@@ -235,6 +245,16 @@ public class Fabricante extends ClienteWs {
 	public void setLotes(List<Lote> lotes) {
 		this.lotes = lotes;
 	}
+	
+	
+
+	public Long getQuotaDeBlanks() {
+		return quotaDeBlanks;
+	}
+
+	public void setQuotaDeBlanks(Long quotaDeBlanks) {
+		this.quotaDeBlanks = quotaDeBlanks;
+	}
 
 	@Override
 	public int hashCode() {
@@ -250,6 +270,7 @@ public class Fabricante extends ClienteWs {
 		result = prime * result + ((nomeFantasia == null) ? 0 : nomeFantasia.hashCode());
 		result = prime * result + ((numeroContrato == null) ? 0 : numeroContrato.hashCode());
 		result = prime * result + ((numeroPortaria == null) ? 0 : numeroPortaria.hashCode());
+		result = prime * result + ((quotaDeBlanks == null) ? 0 : quotaDeBlanks.hashCode());
 		result = prime * result + ((telefone == null) ? 0 : telefone.hashCode());
 		result = prime * result + ((validadeAlvara == null) ? 0 : validadeAlvara.hashCode());
 		result = prime * result + ((validadeContrato == null) ? 0 : validadeContrato.hashCode());
@@ -316,6 +337,11 @@ public class Fabricante extends ClienteWs {
 				return false;
 		} else if (!numeroPortaria.equals(other.numeroPortaria))
 			return false;
+		if (quotaDeBlanks == null) {
+			if (other.quotaDeBlanks != null)
+				return false;
+		} else if (!quotaDeBlanks.equals(other.quotaDeBlanks))
+			return false;
 		if (telefone == null) {
 			if (other.telefone != null)
 				return false;
@@ -370,10 +396,13 @@ public class Fabricante extends ClienteWs {
 		builder.append(inativa);
 		builder.append(", motivoInativacao=");
 		builder.append(motivoInativacao);
+		builder.append(", quotaDeBlanks=");
+		builder.append(quotaDeBlanks);
 		builder.append("]");
 		return builder.toString();
 	}
-	
+
+		
 	
 
 /*	private boolean impedidaPorSancao() {

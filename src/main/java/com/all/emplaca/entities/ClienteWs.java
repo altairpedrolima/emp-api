@@ -15,7 +15,7 @@ import javax.persistence.OneToMany;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class ClienteWs implements Serializable{
+public class ClienteWs implements Serializable {
 
 	private static final long serialVersionUID = 4780447495743154454L;
 
@@ -25,9 +25,16 @@ public class ClienteWs implements Serializable{
 
 	private String nome;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, 
-			orphanRemoval=true)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	private List<CertificadoDigital> certificadosDigitais;
+
+	public ClienteWs() {
+	}
+
+	public ClienteWs(String nome) {
+		super();
+		this.nome = nome;
+	}
 
 	public Long getId() {
 		return id;
@@ -94,7 +101,5 @@ public class ClienteWs implements Serializable{
 	public String toString() {
 		return "ClienteWs [id=" + id + ", nome=" + nome + ", certificadosDigitais=" + certificadosDigitais + "]";
 	}
-	
-	
 
 }

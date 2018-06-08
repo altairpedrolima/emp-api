@@ -20,13 +20,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 public class Lote implements Identifiable<Long>{
 
-	public Lote(Long quantidadeDeBlanksSolicitados, Fabricante fabricante) {
-		this.quantidadeDeBlanksSolicitados = quantidadeDeBlanksSolicitados;
+	public Lote(Long quantidadeBlanksSolicitados, Fabricante fabricante, String numeroLote, EstadoLote estadoLote) {
+		super();
+		this.quantidadeDeBlanksSolicitados = quantidadeBlanksSolicitados;
 		this.fabricante = fabricante;
+		this.numeroLote = numeroLote;
+		this.estadoLote = estadoLote;
 	}
-
+	
 	public Lote() {
-
+		
 	}
 
 	@Id
