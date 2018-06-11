@@ -24,6 +24,8 @@ import com.all.emplaca.service.FabricanteService;
 import com.all.emplaca.service.LoteService;
 import com.all.emplaca.service.utils.GeradorNumeroLote;
 
+import java.time.LocalDateTime;
+
 @RunWith(SpringRunner.class)
 // @DataJpaTest
 public class LoteServiceTest {

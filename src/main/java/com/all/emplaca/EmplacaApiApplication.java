@@ -41,23 +41,6 @@ public class EmplacaApiApplication implements CommandLineRunner{
         LOGGER.warn("Hey, This is a warning!");
         LOGGER.error("Oops! We have an Error. OK");
         // LOGGER.fatal("Damn! Fatal error. Please fix me.");
-		
-		loteRepository.deleteAllInBatch();
-		fabricanteRepository.deleteAllInBatch();
-		Fabricante fabricante = new Fabricante();
-		fabricante.setCnpj("10746245000116");
-		fabricante.setNome("Snow Blanks S/A");
-		fabricanteRepository.save(fabricante);
-		
-		Lote lote = new Lote();
-		lote.setNumeroLote(GeradorNumeroLote.gerarNumeroLotePara(fabricante.getId()));
-		lote.setQuantidadeDeBlanksSolicitados(50l);
-		lote.setEstadoLote(EstadoLote.SOLICITADO);
-		lote.setFabricante(fabricante);
-		// loteService.save(lote);
-		loteRepository.save(lote);
 
-		
-		
 	}
 }
