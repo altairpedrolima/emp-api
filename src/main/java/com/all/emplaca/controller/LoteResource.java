@@ -14,10 +14,13 @@ import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
@@ -52,24 +55,20 @@ public class LoteResource {
 		// TODO obter id do fabricante já cadastrado.
 
 		Link selfLink = linkTo(methodOn(LoteResource.class).findAll()).withSelfRel();
-
-		return loteToResource(loteService.findAll(), selfLink);
+		return lotesToResource(loteService.findAll(), selfLink);
 
 	}
 
 	@GetMapping("/{id}")
-	public Resource<Lote> getById(Long id) {
-		Lote lote = loteService.getBiId(id);
-
-		URI uri = MvcUriComponentsBuilder.fromController(getClass()).path("/{id}").buildAndExpand(lote.getId()).toUri();
-		Link selfLink = new Link(uri.toString(), "self");
-
-		return loteToResource(lote, selfLink);
+	public Resource<Lote> findById(@PathVariable Long id) {
+		Lote lote = loteService.findById(id);
+		return loteToResource(lote);
 	}
 
 	@PostMapping
-	public Resource<Lote> createLoteOfBlanks(@Valid @RequestBody LoteRequest loteRequest) {
-
+	@ResponseStatus(HttpStatus.CREATED)
+	public Resource<Lote> createLoteDeBlanks(@Valid @RequestBody LoteRequest loteRequest) {
+		
 		// TODO obter fabricante do header da requisição,
 		// TODO verificar autenticação e autorização do fabricante
 
@@ -78,61 +77,59 @@ public class LoteResource {
 
 		Lote lote = loteService.criarLoteDeBlanks(loteRequest);
 
-		URI uri = MvcUriComponentsBuilder.fromController(getClass()).path("/{id}").buildAndExpand(lote.getId()).toUri();
-
-		Link selfLink = new Link(uri.toString(), "self");
-
-		return loteToResource(lote, selfLink);
+		return loteToResource(lote);
 
 	}
 
 	// TODO implementar obtenção de lotes para fabricante
 
 	@GetMapping("/fabricante/{id}")
-	public Resources<Resource<Lote>> getLotesByFabricanteId(final Long fabricanteId) {
+	public Resources<Resource<Lote>> getLotesByFabricanteId(@PathVariable Long fabricanteId) {
 
 		Link selfLink = linkTo(methodOn(LoteResource.class).getLotesByFabricanteId(fabricanteId)).withSelfRel();
+		return lotesToResource(loteService.findByFabricanteId(fabricanteId), selfLink);
 
-		return loteToResource(loteService.findByFabricanteId(fabricanteId), selfLink);
 	}
 
 	
+	private Resource<Lote> loteSelf(Lote lote){
+		URI uri = MvcUriComponentsBuilder.fromController(getClass()).path("/{id}").buildAndExpand(lote.getId()).toUri();
+		Link selfLink = new Link(uri.toString(), "self");
+		return new Resource<>(lote, selfLink);
+	}
+	
+
 	private Resource<Lote> loteToResource(Lote lote) {
-		Link linkById = linkTo(methodOn(LoteResource.class).getById(lote.getId())).withSelfRel();
+		
+		LoteRequest loteRequest = new LoteRequest();
 
 		URI uri = MvcUriComponentsBuilder.fromController(getClass()).path("/{id}").buildAndExpand(lote.getId()).toUri();
-
 		Link selfLink = new Link(uri.toString(), "self");
+		
+		Link linkById = linkTo(methodOn(LoteResource.class).findById(lote.getId())).withRel("Por Id");
+		Link findAll = linkTo(methodOn(LoteResource.class).findAll()).withRel("Lista Todos");
+		Link create = linkTo(methodOn(LoteResource.class).createLoteDeBlanks(loteRequest)).withRel("Criar lote");
+		Link getByFabricante = linkTo(methodOn(LoteResource.class).getLotesByFabricanteId(lote.getFabricante().getId())).withRel("Lotes por Fabricante");
 
-		// Link allInvoiceLink =
-		// entityLinks.linkToCollectionResource(Invoice.class).withRel("all-invoices");
-		// Link invoiceLink =
-		// linkTo(methodOn(LoteResouce.class).getInvoiceByCustomerId(customer.getId())).withRel("invoice");
-
-		return new Resource<>(lote, linkById, selfLink);
-
-	}
-
-	private Resource<Lote> loteToResource(Lote lote, Link selfLink) {
-		Link linkById = linkTo(methodOn(LoteResource.class).getById(lote.getId())).withSelfRel();
-
-		// Link allInvoiceLink =
-		// entityLinks.linkToCollectionResource(Invoice.class).withRel("all-invoices");
-		// Link invoiceLink =
-		// linkTo(methodOn(LoteResouce.class).getInvoiceByCustomerId(customer.getId())).withRel("invoice");
-
-		return new Resource<>(lote, selfLink, linkById);
+		return new Resource<>(lote, selfLink, linkById, findAll, create, getByFabricante);
 
 	}
 
-	private Resources<Resource<Lote>> loteToResource(List<Lote> lotes, Link selfLink) {
+	private Resources<Resource<Lote>> lotesToResource(List<Lote> lotes, Link selfLink) {
 
-		// Link self = linkTo(methodOn(LoteResource.class).findAll()).withSelfRel();
 
-		List<Resource<Lote>> loteResources = lotes.stream().map(lote -> loteToResource(lote))
+		LoteRequest loteRequest = new LoteRequest();
+		Long id = 0l;
+		
+		Link linkById = linkTo(methodOn(LoteResource.class).findById(id)).withRel("Por Id");
+		Link findAll = linkTo(methodOn(LoteResource.class).findAll()).withRel("Lista Todos");
+		Link create = linkTo(methodOn(LoteResource.class).createLoteDeBlanks(loteRequest)).withRel("Criar lote");
+		Link getByFabricante = linkTo(methodOn(LoteResource.class).getLotesByFabricanteId(id)).withRel("Lotes por Fabricante");
+		
+		List<Resource<Lote>> loteResources = lotes.stream().map(lote -> loteSelf(lote))
 				.collect(Collectors.toList());
-
-		return new Resources<>(loteResources, selfLink);
+		
+		return new Resources<>(loteResources, selfLink, linkById, findAll, create, getByFabricante);
 
 	}
 

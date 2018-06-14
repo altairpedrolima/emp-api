@@ -60,7 +60,7 @@ public class LoteService {
 		return lotes;
 	}
 
-	public Lote getBiId(Long id){
+	public Lote findById(Long id){
 
 		return Optional
                 .of(loteRepository.findById(id))
