@@ -1,7 +1,12 @@
 package com.all.emplaca.entities;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,16 +16,22 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
-import org.springframework.hateoas.Identifiable;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.all.emplaca.enums.EstadoLote;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Entity
-public class Lote implements Identifiable<Long>{
+// implements Identifiable<Long>
 
-	public Lote(Long quantidadeBlanksSolicitados, Fabricante fabricante, String numeroLote, EstadoLote estadoLote, LocalDateTime dataHoraRegistro) {
+@Entity
+public class Lote implements Serializable {
+	private static final long serialVersionUID = 1591421672797784393L;
+
+	public Lote(Long quantidadeBlanksSolicitados, Fabricante fabricante, String numeroLote, EstadoLote estadoLote,
+			LocalDateTime dataHoraRegistro) {
 		super();
 		this.quantidadeDeBlanksSolicitados = quantidadeBlanksSolicitados;
 		this.fabricante = fabricante;
@@ -28,9 +39,9 @@ public class Lote implements Identifiable<Long>{
 		this.estadoLote = estadoLote;
 		this.dataHoraRegistro = dataHoraRegistro;
 	}
-	
+
 	public Lote() {
-		
+
 	}
 
 	@Id
@@ -56,6 +67,17 @@ public class Lote implements Identifiable<Long>{
 	@ManyToOne
 	@JoinColumn(name = "id_fabricante")
 	private Fabricante fabricante;
+
+	// TODO Associar lote com blanks
+
+	// @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER,
+	// orphanRemoval=true)
+	
+	// @OneToMany(mappedBy = "fabricante", cascade = CascadeType.ALL)
+	
+
+	@OneToMany(mappedBy = "lote", cascade = { CascadeType.ALL })
+	private List<Blank> blanks;
 
 	public Long getId() {
 		return id;
@@ -111,6 +133,15 @@ public class Lote implements Identifiable<Long>{
 
 	public void setFabricante(Fabricante fabricante) {
 		this.fabricante = fabricante;
+	}
+
+	public List<Blank> getBlanks() {
+		return Optional.ofNullable(blanks).orElse(Collections.emptyList());		
+		//return blanks;
+	}
+
+	public void setBlanks(List<Blank> blanks) {
+		this.blanks = blanks;
 	}
 
 	@Override
@@ -192,15 +223,5 @@ public class Lote implements Identifiable<Long>{
 		builder.append("]");
 		return builder.toString();
 	}
-
-	
-
-	// TODO Associar lote com blanks
-	/*
-	 * @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER,
-	 * orphanRemoval=true) private List<Blanks> blanks;
-	 */
-
-	
 
 }

@@ -1,16 +1,16 @@
 package com.all.emplaca.bdstart;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+
 import com.all.emplaca.entities.Fabricante;
 import com.all.emplaca.entities.Lote;
 import com.all.emplaca.enums.EstadoLote;
 import com.all.emplaca.repository.FabricanteRepository;
 import com.all.emplaca.repository.LoteRepository;
 import com.all.emplaca.service.utils.GeradorNumeroLote;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 public class StartOfBankService {
@@ -20,6 +20,9 @@ public class StartOfBankService {
 
     @Autowired
     private LoteRepository loteRepository;
+    
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Value("${spring.jpa.hibernate.ddl-auto}")
     private String estrategiaDeBanco;
@@ -28,6 +31,8 @@ public class StartOfBankService {
 
         // loteRepository.deleteAllInBatch();
         // fabricanteRepository.deleteAllInBatch();
+    	
+    	jdbcTemplate.execute("CREATE SEQUENCE IF NOT EXISTS serial_blanks_seq;");    	
 
         Fabricante fabricante = new Fabricante();
         fabricante.setCnpj("10746245000116");
