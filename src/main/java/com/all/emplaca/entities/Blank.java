@@ -30,6 +30,7 @@ public class Blank{
 	}
 	
 	public Blank() {
+		
 	}
 
 
